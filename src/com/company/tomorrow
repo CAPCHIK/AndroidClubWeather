@@ -1,0 +1,43 @@
+{
+  "city": {
+    "id": 524901,
+    "name": "Moscow",
+    "coord": {
+      "lon": 37.615555,
+      "lat": 55.75222
+    },
+    "country": "RU",
+    "population": 0
+  },
+  "cod": "200",
+  "message": 0.0089,
+  "cnt": 1,
+  "list": [
+    {
+      "dt": 1459501200,
+      "temp": {
+        "day": 4.8,
+        "min": 2.33,
+        "max": 5.47,
+        "night": 2.33,
+        "eve": 5.31,
+        "morn": 2.89
+      },
+      "pressure": 991.81,
+      "humidity": 97,
+      "weather": [
+        {
+          "id": 600,
+          "main": "Snow",
+          "description": "light snow",
+          "icon": "13d"
+        }
+      ],
+      "speed": 8.51,
+      "deg": 288,
+      "clouds": 88,
+      "rain": 0.55,
+      "snow": 0.66
+    }
+  ]
+}
