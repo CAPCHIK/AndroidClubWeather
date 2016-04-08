@@ -21,11 +21,15 @@ import java.util.Date;
 * Использует HTTP
 * */
 
-public class ApiConnector {
+public class ApiConnector implements Runnable {
 
+    private Thread forDots = new Thread(this);
+    private boolean neddDots = false;
     private static final String APP_ID = "c7fd32100220c0295367f127a8d1848a";
 
     public String getForecastForToday(String city) throws IOException {
+        forDots = new Thread(this);
+        forDots.start();
         URL address = null;
         try {
             String endpointWithParams = String.format("/data/2.5/weather?q=%s&appid=%s&units=%s", city, APP_ID, "metric");
@@ -47,10 +51,16 @@ public class ApiConnector {
         } catch (IOException e) {
             System.err.println(e.toString());
         }
+        neddDots = false;
+        while (forDots.isAlive()){
+
+        }
         return result.toString();
     }
     public String getForecastForTomorrow(String city) throws IOException {
         URL address = null;
+        forDots = new Thread(this);
+        forDots.start();
         try {//aapi.openweathermap.org
             String endpointWithParams = String.format("/data/2.5/forecast/daily?q=%s,ru&cnt=1&appid=%s&units=%s", city, APP_ID, "metric");
             address = new URL("http", "api.openweathermap.org", endpointWithParams);
@@ -70,8 +80,26 @@ public class ApiConnector {
         } catch (IOException e) {
             System.err.println(e.toString());
         }
+
+        neddDots = false;
+        while (forDots.isAlive()){
+
+        }
         return result.toString();
 
     }
 
+    @Override
+    public void run() {
+        neddDots = true;
+        while (neddDots) {
+            System.out.print('.');
+            try {
+                Thread.sleep(100);
+            }catch (Exception ex){
+                ex.getMessage();
+            }
+        }
+        System.out.println();
+    }
 }

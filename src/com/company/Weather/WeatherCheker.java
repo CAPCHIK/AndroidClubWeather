@@ -1,5 +1,6 @@
 package com.company.Weather;
 
+import com.company.GuiCallback;
 import com.google.gson.*;
 
 import java.io.*;
@@ -22,15 +23,15 @@ public class WeatherCheker {
         System.out.println("Hello from the OpenWeatherMap API sample app!");
     }
 
-    public void printMenu() {
+    public void printMenu(GuiCallback callback) {
         System.out.println("1 - Get weather forecast for today for " + settings.City);
         System.out.println("2 - Get weather forecast for tomorrow for " + settings.City);
         System.out.println("3 - Set target City");
         System.out.println("0 - Exit");
 
-        int option = 0;
+        int option;
         try {
-            option = reader.read();
+            option = Integer.parseInt(reader.readLine());
         } catch (IOException e) {
             System.out.println("Введено некорректное число");
             return;
@@ -43,16 +44,19 @@ public class WeatherCheker {
             case 3: setCity();
                 break;
             case 0:
+                System.out.println("Работа окончена!");
                 System.exit(0);
         }
+        callback.reset();
     }
 
-    public String printForecastForToday(){
+    public void printForecastForToday(){
         String jsonFotToday;
         try {
             jsonFotToday = api.getForecastForToday(settings.City);
         } catch (IOException e) {
-            return e.getMessage();
+            System.out.println(e.getMessage());
+            return;
         }
         JsonParser parser = new JsonParser();
         JsonElement mainElement = parser.parse(jsonFotToday);
@@ -61,18 +65,19 @@ public class WeatherCheker {
         JsonObject mainObject = rootObject.getAsJsonObject("main");
 
 
-        return String.format(
+        System.out.println( String.format(
                 "Temperature today is %s, pressure %s",
                 mainObject.get("temp").getAsString(),
                 mainObject.get("pressure").getAsString()
-        );
+        ));
     }
-    public String printForecastForTomorrow() {
+    public void printForecastForTomorrow() {
         String forecastForTomorrow;
         try {
             forecastForTomorrow = api.getForecastForTomorrow(settings.City);
         } catch (IOException ex) {
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
+            return;
         }
         JsonParser parser = new JsonParser();
         JsonElement mainElement = parser.parse(forecastForTomorrow);
@@ -86,11 +91,11 @@ public class WeatherCheker {
         String pressure = list.get(0).getAsJsonObject()
                 .get("pressure").getAsString();
 
-        return String.format(
+        System.out.println(String.format(
                 "Temperature tomorrow is %s, pressure %s",
                 temp,
                 pressure
-        );
+        ));
     }
 
     public void setCity(){
@@ -140,9 +145,18 @@ public class WeatherCheker {
     }
 
     public void start() {
-        while (true){
-            printMenu();
-        }
+        printGreeting();
+        run();
+    }
+
+
+    public void run() {
+        printMenu(new GuiCallback() {
+            @Override
+            public void reset() {
+                run();
+            }
+        });
     }
 
     private class Settings {
